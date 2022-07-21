@@ -1,6 +1,6 @@
 <template>
     <div
-        class="w-full h-screen bg-green flex pt-40 justify-center bg-green-600 text-white"
+        class="main w-full h-screen bg-green flex py-[10vh] justify-center bg-green-600 text-white"
     >
         <div>
             <!--            <div>
