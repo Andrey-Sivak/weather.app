@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-full w-96 md:px-0 px-5">
+    <div class="content max-w-full w-125 p-5 h-full">
         <div class="relative z-20 pb-1">
             <input
                 type="text"
@@ -37,17 +37,12 @@
                 {{ location.name }} ({{ location.country }})
             </p>
             <div class="my-4">
-                <img
-                    class="mx-auto drop-shadow-lg"
-                    :src="`http://openweathermap.org/img/wn/${weather.icon}@2x.png`"
-                    alt="icon"
-                />
                 <p
-                    class="text-3xl text-center mb-4 font-black drop-shadow-lg"
+                    class="text-3xl text-center mb-1 font-black drop-shadow-lg"
                     v-html="normalizeTemperature(weather.temp)"
                 ></p>
                 <p
-                    class="text-center font-bold"
+                    class="text-center font-bold mb-4"
                     v-html="
                         'Feels like ' + normalizeTemperature(weather.feels_like)
                     "
@@ -55,7 +50,15 @@
                 <p
                     class="text-center font-bold drop-shadow-lg text-xl drop-shadow-lg"
                 >
-                    {{ weather.main }} ({{ weather.description }})
+                    {{ weather.description }}
+                </p>
+                <img
+                    class="mx-auto drop-shadow-lg"
+                    :src="`http://openweathermap.org/img/wn/${weather.icon}@2x.png`"
+                    alt="icon"
+                />
+                <p class="text-3xl text-center mb-1 font-black drop-shadow-lg">
+                    {{ normalizeTime(time) }}
                 </p>
             </div>
             <div class="border-solid border-t border-white">
@@ -95,6 +98,7 @@ export default {
             coords: {},
             updatingWeather: null,
             updatingTimeout: 10000,
+            time: new Date(Date.now()),
         };
     },
     methods: {
@@ -238,6 +242,17 @@ export default {
                 }
             }, this.updatingTimeout);
         },
+
+        timer() {
+            this.time = new Date(Date.now());
+        },
+
+        normalizeTime(date) {
+            return date.toLocaleString('en-GB', {
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+        },
     },
     mounted() {
         const isOldDataExist = this.getData();
@@ -245,6 +260,8 @@ export default {
         if (isOldDataExist) {
             this.setUpdatingInterval();
         }
+
+        setInterval(this.timer, 1000 * 60);
     },
     components: {},
 };
