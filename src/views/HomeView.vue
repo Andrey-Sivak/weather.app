@@ -191,7 +191,7 @@ export default {
             };
 
             this.weather = newWeatherObject;
-            this.location = { ...newLocationObject, ...this.location };
+            this.location = { ...this.location, ...newLocationObject };
         },
 
         async getDataByCoords(lat, lon) {
