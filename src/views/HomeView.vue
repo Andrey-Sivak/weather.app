@@ -219,11 +219,18 @@ export default {
         },
 
         setUpdatingInterval() {
-            this.updatingWeather = setInterval(
-                () =>
-                    this.getDataByCoords(this.location.lat, this.location.lon),
-                this.updatingTimeout
-            );
+            this.updatingWeather = setInterval(async () => {
+                const isDataUpdated = await this.getDataByCoords(
+                    this.location.lat,
+                    this.location.lon
+                );
+
+                if (isDataUpdated) {
+                    this.saveData();
+                } else {
+                    this.error = `failed to get data by ${this.query}`;
+                }
+            }, this.updatingTimeout);
         },
     },
     mounted() {
