@@ -37,6 +37,11 @@
                 {{ location.name }} ({{ location.country }})
             </p>
             <div class="my-4">
+                <img
+                    class="mx-auto drop-shadow-lg"
+                    :src="`http://openweathermap.org/img/wn/${weather.icon}@2x.png`"
+                    alt="icon"
+                />
                 <p
                     class="text-3xl text-center mb-4 font-black drop-shadow-lg"
                     v-html="normalizeTemperature(weather.temp)"
@@ -183,6 +188,7 @@ export default {
                 main: dataObject.weather[0].main,
                 description: dataObject.weather[0].description,
                 windSpeed: dataObject.wind.speed,
+                icon: dataObject.weather[0].icon,
             };
 
             const newLocationObject = {
