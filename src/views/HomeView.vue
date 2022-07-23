@@ -80,8 +80,6 @@
 </template>
 
 <script>
-import BaseInput from '@/components/BaseInput';
-
 export default {
     name: 'HomeView',
     data() {
@@ -259,6 +257,5 @@ export default {
 
         setInterval(this.timer, 1000 * 60);
     },
-    components: { BaseInput },
 };
 </script>
