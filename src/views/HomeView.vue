@@ -1,20 +1,14 @@
 <template>
     <div class="content max-w-full w-125 p-5 h-full">
         <div class="relative z-20 pb-1">
-            <input
-                type="text"
+            <BaseInput
                 class="w-full p-4 bg-white/80 rounded-tr-xl rounded-bl-xl block w-full shadow-xl focus:shadow-md transition-all duration-300 text-black"
-                v-model="query"
-                @input="search(query)"
-                @keypress.enter="selectSpot(hints[0])"
+                type="text"
                 placeholder="Search..."
+                v-model="query"
+                :error="error"
+                @update:modelValue="search(query)"
             />
-            <p
-                class="absolute left-0 top-full w-full text-red-600 pl-4"
-                v-if="error"
-            >
-                {{ error }}
-            </p>
             <div
                 class="absolute left-0 top-full w-full mt-2 bg-white/80 shadow-md rounded overflow-hidden"
                 v-if="hints.length"
@@ -86,6 +80,8 @@
 </template>
 
 <script>
+import BaseInput from '@/components/BaseInput';
+
 export default {
     name: 'HomeView',
     data() {
@@ -263,6 +259,6 @@ export default {
 
         setInterval(this.timer, 1000 * 60);
     },
-    components: {},
+    components: { BaseInput },
 };
 </script>
