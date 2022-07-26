@@ -9,19 +9,7 @@
                 :error="error"
                 @update:modelValue="search(query)"
             />
-            <div
-                class="absolute left-0 top-full w-full mt-2 bg-white/80 shadow-md rounded overflow-hidden"
-                v-if="hints.length"
-            >
-                <p
-                    class="w-full py-2 cursor-pointer border-b last:border-none border-solid border-black/30 text-black/70 px-4 hover:bg-white"
-                    v-for="(hint, idx) in hints"
-                    :key="idx"
-                    @click="selectSpot(hint)"
-                >
-                    {{ hint.name }} | {{ hint.state }}({{ hint.country }})
-                </p>
-            </div>
+            <TipsList :tips="hints" @select-tip="selectSpot" />
         </div>
         <div
             class="relative z-10"
@@ -80,8 +68,10 @@
 </template>
 
 <script>
+import TipsList from '@/components/TipsList';
 export default {
     name: 'HomeView',
+    components: { TipsList },
     data() {
         return {
             query: '',
@@ -91,7 +81,7 @@ export default {
             hints: [],
             coords: {},
             updatingWeather: null,
-            updatingTimeout: 10000,
+            updatingTimeout: 100000,
             time: new Date(Date.now()),
         };
     },
