@@ -2,7 +2,6 @@
     <div class="content max-w-full w-125 p-5 h-full">
         <div class="relative z-20 pb-1">
             <BaseInput
-                class="w-full p-4 bg-white/80 rounded-tr-xl rounded-bl-xl block w-full shadow-xl focus:shadow-md transition-all duration-300 text-black"
                 type="text"
                 placeholder="Search..."
                 v-model="query"
