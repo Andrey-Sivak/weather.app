@@ -10,59 +10,7 @@
             />
             <TipsList :tips="hints" @select-tip="selectSpot" />
         </div>
-        <div
-            class="relative z-10"
-            v-if="Object.keys(weather).length && Object.keys(location).length"
-        >
-            <p class="mt-8 mb-2 text-3xl text-center font-black drop-shadow-lg">
-                {{ location.name }} ({{ location.country }})
-            </p>
-            <div class="my-4">
-                <p
-                    class="text-3xl text-center mb-1 font-black drop-shadow-lg"
-                    v-html="normalizeTemperature(weather.temp)"
-                ></p>
-                <p
-                    class="text-center font-bold mb-4"
-                    v-html="
-                        'Feels like ' + normalizeTemperature(weather.feels_like)
-                    "
-                ></p>
-                <p
-                    class="text-center font-bold drop-shadow-lg text-xl drop-shadow-lg"
-                >
-                    {{ weather.description }}
-                </p>
-                <img
-                    class="mx-auto drop-shadow-lg"
-                    :src="`http://openweathermap.org/img/wn/${weather.icon}@2x.png`"
-                    alt="icon"
-                />
-                <p class="text-3xl text-center mb-1 font-black drop-shadow-lg">
-                    {{ normalizeTime(time) }}
-                </p>
-            </div>
-            <div class="border-solid border-t border-white">
-                <div
-                    class="py-2 px-4 flex w-full items-center justify-between drop-shadow-lg text-xl drop-shadow-lg border-solid border-b border-white"
-                >
-                    <p>Wind speed:</p>
-                    <p>
-                        <span class="font-bold">{{ weather.windSpeed }}</span>
-                        m/s
-                    </p>
-                </div>
-                <div
-                    class="py-2 px-4 flex w-full items-center justify-between drop-shadow-lg text-xl drop-shadow-lg border-solid border-b border-white"
-                >
-                    <p>Pressure:</p>
-                    <p>
-                        <span class="font-bold">{{ weather.pressure }}</span>
-                        bar
-                    </p>
-                </div>
-            </div>
-        </div>
+        <BaseContent :weather="weather" :location="location" />
     </div>
 </template>
 
@@ -83,7 +31,6 @@ export default {
             coords: {},
             updatingWeather: null,
             updatingTimeout: 100000,
-            time: new Date(Date.now()),
         };
     },
     methods: {
@@ -152,11 +99,6 @@ export default {
             return oldWeatherData && oldLocationData;
         },
 
-        normalizeTemperature(temperature) {
-            // TODO: remake to template string
-            return `${temperature.toFixed()}&#176;<span class="font-bold">C</span>`;
-        },
-
         updateData(dataObject) {
             this.updateWeather(dataObject);
             this.updateLocation(dataObject);
@@ -187,17 +129,6 @@ export default {
                 await this.updateWeatherData();
             }, this.updatingTimeout);
         },
-
-        timer() {
-            this.time = new Date(Date.now());
-        },
-
-        normalizeTime(date) {
-            return date.toLocaleString('en-GB', {
-                hour: '2-digit',
-                minute: '2-digit',
-            });
-        },
     },
     mounted() {
         const isOldDataExist = this.getData();
@@ -205,8 +136,6 @@ export default {
         if (isOldDataExist) {
             this.setUpdatingInterval();
         }
-
-        setInterval(this.timer, 1000 * 60);
     },
 };
 </script>
