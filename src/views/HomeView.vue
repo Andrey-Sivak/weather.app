@@ -109,22 +109,21 @@ export default {
 
         async updateWeatherData() {
             const weatherData = await getWeatherDataByCoords(
-                this.location.lat,
-                this.location.lon
+                this.coords.lat,
+                this.coords.lon
             );
 
             if (typeof weatherData !== 'object' || weatherData?.cod === '404') {
                 this.error = `${weatherData.message}. Please try later`;
             } else {
                 this.updateData(weatherData);
-                this.saveData();
             }
         },
 
         async selectSpot(locationObject) {
             this.hints = [];
-            this.location.lat = locationObject.lat;
-            this.location.lon = locationObject.lon;
+            this.coords.lat = locationObject.lat;
+            this.coords.lon = locationObject.lon;
 
             await this.updateWeatherData();
 
@@ -160,7 +159,13 @@ export default {
         },
 
         updateData(dataObject) {
-            const newWeatherObject = {
+            this.updateWeather(dataObject);
+            this.updateLocation(dataObject);
+            this.saveData();
+        },
+
+        updateWeather(dataObject) {
+            this.weather = {
                 temp: dataObject.main.temp,
                 pressure: dataObject.main.pressure,
                 feels_like: dataObject.main.feels_like,
@@ -169,14 +174,13 @@ export default {
                 windSpeed: dataObject.wind.speed,
                 icon: dataObject.weather[0].icon,
             };
+        },
 
-            const newLocationObject = {
+        updateLocation(dataObject) {
+            this.location = {
                 name: dataObject.name,
                 country: dataObject.sys.country,
             };
-
-            this.weather = newWeatherObject;
-            this.location = { ...this.location, ...newLocationObject };
         },
 
         setUpdatingInterval() {
