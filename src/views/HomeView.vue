@@ -69,6 +69,8 @@
 
 <script>
 import TipsList from '@/components/TipsList';
+import { getHintsByQuery, getWeatherDataByCoords } from '@/api';
+
 export default {
     name: 'HomeView',
     components: { TipsList },
@@ -95,49 +97,38 @@ export default {
                 return;
             }
 
-            const url = this.createUrl(
-                'http://api.openweathermap.org/geo/1.0/direct',
-                {
-                    q: query,
-                    limit: 5,
-                }
+            const result = await getHintsByQuery(query, 5);
+
+            if (Array.isArray(result) && result.length > 0) {
+                this.hints = result;
+                return;
+            }
+
+            this.error = 'Nothing found';
+        },
+
+        async updateWeatherData() {
+            const weatherData = await getWeatherDataByCoords(
+                this.location.lat,
+                this.location.lon
             );
 
-            try {
-                const request = await fetch(url);
-                this.hints = await request.json();
-            } catch (e) {
-                console.log(e);
+            if (typeof weatherData !== 'object' || weatherData?.cod === '404') {
+                this.error = `${weatherData.message}. Please try later`;
+            } else {
+                this.updateData(weatherData);
+                this.saveData();
             }
         },
 
         async selectSpot(locationObject) {
             this.hints = [];
+            this.location.lat = locationObject.lat;
+            this.location.lon = locationObject.lon;
 
-            const isDataUpdated = await this.getDataByCoords(
-                locationObject.lat,
-                locationObject.lon
-            );
-
-            if (isDataUpdated) {
-                this.saveData();
-            } else {
-                this.error = `failed to get data by ${this.query}`;
-            }
+            await this.updateWeatherData();
 
             this.query = '';
-        },
-
-        createUrl(baseUrl, searchParamsObject) {
-            const API_KEY = 'c00f5f870cabcfba830203d9ff199683';
-            const url = new URL(baseUrl);
-
-            Object.entries(searchParamsObject).forEach(([key, value]) =>
-                url.searchParams.set(key, value)
-            );
-            url.searchParams.set('appid', API_KEY);
-
-            return url;
         },
 
         saveData() {
@@ -188,42 +179,9 @@ export default {
             this.location = { ...this.location, ...newLocationObject };
         },
 
-        async getDataByCoords(lat, lon) {
-            this.location.lat = lat;
-            this.location.lon = lon;
-
-            const url = this.createUrl(
-                'https://api.openweathermap.org/data/2.5/weather',
-                {
-                    lat: lat,
-                    lon: lon,
-                    units: 'metric',
-                }
-            );
-
-            try {
-                const request = await fetch(url);
-                const result = await request.json();
-                this.updateData(result);
-                return true;
-            } catch (e) {
-                console.log(e);
-                return false;
-            }
-        },
-
         setUpdatingInterval() {
             this.updatingWeather = setInterval(async () => {
-                const isDataUpdated = await this.getDataByCoords(
-                    this.location.lat,
-                    this.location.lon
-                );
-
-                if (isDataUpdated) {
-                    this.saveData();
-                } else {
-                    this.error = `failed to get data by ${this.query}`;
-                }
+                await this.updateWeatherData();
             }, this.updatingTimeout);
         },
 
