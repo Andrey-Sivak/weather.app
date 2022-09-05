@@ -30,7 +30,7 @@ export default {
             hints: [],
             coords: {},
             updatingWeather: null,
-            updatingTimeout: 100000,
+            updatingTimeout: 10000,
         };
     },
     methods: {
