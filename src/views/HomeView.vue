@@ -88,6 +88,18 @@ export default {
             const oldLocationData =
                 window.localStorage.getItem('location-data');
 
+            const isLat = new URL(window.location.href).searchParams.has('lat');
+            const isLon = new URL(window.location.href).searchParams.has('lon');
+
+            if (isLat && isLon) {
+                this.coords.lat = new URL(
+                    window.location.href
+                ).searchParams.get('lat');
+                this.coords.lon = new URL(
+                    window.location.href
+                ).searchParams.get('lon');
+            }
+
             if (oldWeatherData) {
                 this.weather = JSON.parse(oldWeatherData);
             }
@@ -128,6 +140,17 @@ export default {
             this.updatingWeather = setInterval(async () => {
                 await this.updateWeatherData();
             }, this.updatingTimeout);
+        },
+    },
+    watch: {
+        coords: {
+            handler() {
+                const url = new URL(window.location.href);
+                url.searchParams.set('lat', this.coords.lat);
+                url.searchParams.set('lon', this.coords.lon);
+                window.history.pushState(null, document.title, url);
+            },
+            deep: true,
         },
     },
     mounted() {
