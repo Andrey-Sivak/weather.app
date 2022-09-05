@@ -2,7 +2,7 @@
     <input
         class="w-full p-4 bg-white/80 rounded-tr-xl rounded-bl-xl block w-full shadow-xl focus:shadow-md transition-all duration-300 text-black"
         v-bind="$attrs"
-        :modelValue="modelValue"
+        :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
     />
     <!--      @keypress.enter="selectSpot(hints[0])"-->
