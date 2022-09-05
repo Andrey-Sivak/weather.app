@@ -7,6 +7,7 @@
                 v-model="query"
                 :error="error"
                 @update:modelValue="search(query)"
+                @keypress.enter="selectSpot(hints.at(0))"
             />
             <TipsList :tips="hints" @select-tip="selectSpot" />
         </div>
